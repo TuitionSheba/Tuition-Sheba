@@ -28,7 +28,7 @@ const Navbar = () => {
       <li>
         <NavLink
           className="hover:opacity-80 cursor-pointer"
-          to={"/Teachers-Application"}
+          to={"/Requirements-Forum"}
         >
           Get a Tutor
         </NavLink>
@@ -98,7 +98,7 @@ const Navbar = () => {
       <li>
         <NavLink
           className="hover:opacity-80 cursor-pointer"
-          to={"/Teachers-Application"}
+          to={"/Requirements-Forum"}
         >
           Become a Teacher
         </NavLink>

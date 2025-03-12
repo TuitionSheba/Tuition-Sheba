@@ -7,12 +7,11 @@ import UserProfile from "../Dashboard/UserProfile";
 import DashboardPageRoot from "../root/DashboardPageRoot";
 import TeachersSubmission from "../Dashboard/Admin/TeachersSubmission";
 import AdminRoute from "./adminRoute";
-import TeacherApplicationForm from "../MainPage/Teacher Application/TeacherApplication";
-// import UserRoute from "./UserRoute";
 import ApplicatorsDetails from "../Dashboard/Admin/ApplicatorsDetails";
 import TeachersDetails from "../MainPage/Home/Available Tuitions/Tuition data/TeachersDetails";
 import PrivateRoute from "./PrivateRoute";
 import Notifications from "../Dashboard/Notifications";
+import TeacherRequirementsForm from "../MainPage/Find Tutor/TeacherRequirements";
 
 const router = createBrowserRouter([
   {
@@ -32,10 +31,10 @@ const router = createBrowserRouter([
         element: <SignUp />,
       },
       {
-        path: "/Teachers-Application",
+        path: "/Requirements-Forum",
         element: (
           // <UserRoute>
-          <TeacherApplicationForm />
+          <TeacherRequirementsForm />
           // </UserRoute>
         ),
       },

@@ -2,23 +2,20 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import VerifyEmail from "../Components/VerifyEmail";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../Auth Provider/AuthContext";
+import useEmailVerified from "../Hook/useEmailVerified";
 
 const MainPageRoot = () => {
   const { user } = useContext(AuthContext);
-  const [showVerifyEmail, setShowVerifyEmail] = useState(false);
+  const emailVerify = useEmailVerified();
 
   useEffect(() => {
-    if (user && user.emailVerified === false) {
-      // Only show VerifyEmail if user is loaded and NOT verified
-      setShowVerifyEmail(true);
-    }
     window.scroll(0, 0);
   }, [user]);
   return (
     <div>
-      {showVerifyEmail && (
+      {emailVerify && (
         <div className="z-50 fixed mt-8">
           <VerifyEmail />
         </div>

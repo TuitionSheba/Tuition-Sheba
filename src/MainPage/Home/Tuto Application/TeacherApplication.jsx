@@ -2,52 +2,26 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { RxCross2 } from "react-icons/rx";
 import { FaUser } from "react-icons/fa";
-import { AuthContext } from "../../Auth Provider/AuthContext";
 import "./removeInputIncrement.css";
 import { CiCirclePlus } from "react-icons/ci";
-import Select from "react-select";
-import useAxiosPublic from "../../Hook/useAxiosPublic";
-import useGetLocation from "../../Hook/useGetLocation";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-
-const preferredClassOptions = [
-  { value: "1-5", label: "Class 1-5" },
-  { value: "6-8", label: "Class 6-8" },
-  { value: "9-10", label: "Class 9-10" },
-  { value: "hsc", label: "HSC" },
-];
-const preferredTime = [
-  { value: "morning", label: "Morning" },
-  { value: "afternoon", label: "Afternoon" },
-  { value: "after magrib", label: "After Magrib" },
-  { value: "after esha", label: "After Esha" },
-];
-const availableDaysOption = [
-  { value: 1, label: "1 day in a week" },
-  { value: 2, label: "2 days in a week" },
-  { value: 3, label: "3 days in a week" },
-  { value: 4, label: "4 days in a week" },
-  { value: 5, label: "5 days in a week" },
-  { value: 6, label: "6 days in a week" },
-  { value: 7, label: "7 days in a week" },
-];
+import useAxiosPublic from "../../../Hook/useAxiosPublic";
+import { AuthContext } from "../../../Auth Provider/AuthContext";
+import useGetLocation from "../../../Hook/useGetLocation";
+import useShowPopup from "../../../Hook/useShowPopup";
 
 export default function TeacherApplicationForm() {
   const axios = useAxiosPublic();
   const { user } = useContext(AuthContext);
   const inputRef = useRef();
   const navigate = useNavigate();
+  const showPopup = useShowPopup();
 
   const [section, setSection] = useState(1);
   const [image, setImage] = useState("");
   const [upazillaId, setUpazillaId] = useState(0);
   const [disabled, setDisabled] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState({
-    preferredClass: [],
-    availableDays: 0,
-    preferredTime: [],
-  });
   const [error, setError] = useState({ boo: false, page: 1, message: "" });
 
   const [districtData, upazillaData] = useGetLocation(upazillaId);
@@ -79,6 +53,7 @@ export default function TeacherApplicationForm() {
   };
 
   const onSubmit = (data) => {
+    showPopup();
     const num = data.number.split("");
     if (
       data.number === "" ||
@@ -87,10 +62,7 @@ export default function TeacherApplicationForm() {
       data.area === "" ||
       data.salary === "" ||
       data.birth === "" ||
-      data.gender === "" ||
-      selectedOptions.preferredClass.length === 0 ||
-      selectedOptions.preferredTime.length === 0 ||
-      selectedOptions.availableDays === 0
+      data.gender === ""
     ) {
       setError({ boo: true, page: 1, message: "Please fill out the form" });
       return setSection(1);
@@ -139,11 +111,6 @@ export default function TeacherApplicationForm() {
               upazilla: data.upazilla,
               area: data.area,
             },
-          },
-          preference: {
-            preferredTime: selectedOptions.preferredTime,
-            preferredClass: selectedOptions.preferredClass,
-            availableDays: selectedOptions.availableDays,
           },
           education: data.education,
         };
@@ -307,80 +274,6 @@ export default function TeacherApplicationForm() {
                 placeholder="Area"
                 className="input input-bordered w-full mt-2"
               />
-              <label className="block mt-3 mb-2">Preferred Time</label>
-              <Select
-                isMulti
-                options={preferredTime}
-                value={selectedOptions.preferredTime}
-                onChange={(e) =>
-                  setSelectedOptions((prevState) => ({
-                    ...prevState,
-                    preferredTime: e,
-                  }))
-                }
-                styles={{
-                  control: (baseStyles) => ({
-                    ...baseStyles,
-                    height: "48px",
-                  }),
-                }}
-              />
-              <div className="flex justify-center md:flex-row flex-col md:gap-3 gap-2">
-                <div className="md:w-[330px] w-full h-[48px]">
-                  <label className="block mt-3 mb-2">
-                    Available Days (In a week)
-                  </label>
-                  <Select
-                    options={availableDaysOption}
-                    value={availableDaysOption.find(
-                      (option) => option.value === selectedOptions.availableDays
-                    )}
-                    onChange={(selectedOption) => {
-                      setSelectedOptions((prevState) => ({
-                        ...prevState,
-                        availableDays: selectedOption.value,
-                      }));
-                    }}
-                    styles={{
-                      control: (baseStyles) => ({
-                        ...baseStyles,
-                        height: "48px",
-                      }),
-                    }}
-                  />
-                </div>
-                <div className="md:w-[330px] w-full">
-                  <label className="block mt-3 mb-2">
-                    Expected Salary (per month)
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="taka"
-                    {...register("salary")}
-                    className="input input-bordered w-full"
-                  />
-                </div>
-              </div>
-              <div className="w-full">
-                <label className="block mt-3 mb-2">Preferred Class</label>
-                <Select
-                  isMulti
-                  options={preferredClassOptions}
-                  value={selectedOptions.preferredClass}
-                  onChange={(e) =>
-                    setSelectedOptions((prevState) => ({
-                      ...prevState,
-                      preferredClass: e,
-                    }))
-                  }
-                  styles={{
-                    control: (baseStyles) => ({
-                      ...baseStyles,
-                      height: "48px",
-                    }),
-                  }}
-                />
-              </div>
               <button
                 onClick={() => {
                   setSection(2);

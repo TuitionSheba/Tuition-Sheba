@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../Auth Provider/AuthContext";
 import "./removeInputIncrement.css";
@@ -7,6 +7,7 @@ import useAxiosPublic from "../../Hook/useAxiosPublic";
 import useGetLocation from "../../Hook/useGetLocation";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import useShowPopup from "../../Hook/useShowPopup";
 
 const classOptions = [
   { value: "1", label: "Class 1" },
@@ -22,10 +23,10 @@ const classOptions = [
   { value: "HSC", label: "HSC" },
 ];
 const timeOptions = [
-  { value: "morning", label: "Morning" },
-  { value: "afternoon", label: "Afternoon" },
-  { value: "after magrib", label: "After Magrib" },
-  { value: "after esha", label: "After Esha" },
+  { value: "Morning", label: "Morning" },
+  { value: "Afternoon", label: "Afternoon" },
+  { value: "After Magrib", label: "After Magrib" },
+  { value: "After Esha", label: "After Esha" },
 ];
 const daysOption = [
   { value: 1, label: "1 day in a week" },
@@ -45,64 +46,105 @@ const subjectOptions = [
   { value: "Physics", label: "Physics" },
   { value: "Biology", label: "Biology" },
   { value: "Religion", label: "Religion" },
-  { value: "", label: "" },
+  { value: "ICT", label: "ICT" },
+  { value: "Geography and Environment", label: "Geography and Environment" },
+  { value: "Economics", label: "Economics" },
+  { value: "Agricultural Education", label: "Agricultural education" },
+  { value: "Accounting", label: "Accounting" },
+  { value: "Finance and Banking", label: "Finance and Banking" },
+  { value: "Business venture", label: "Business venture" },
+  {
+    value: "Bangladesh and the world (BGS)",
+    label: "Bangladesh and the world (BGS)",
+  },
+];
+const groupOptions = [
+  { value: "Science", label: "Science" },
+  { value: "Commerce", label: "Commerce" },
+  { value: "Arts", label: "Arts" },
+];
+const mediumOptions = [
+  { value: "Bangla", label: "Bangla" },
+  { value: "English", label: "English" },
+  { value: "Madrasa", label: "Madrasa" },
 ];
 
 export default function TeacherRequirementsForm() {
   const axios = useAxiosPublic();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const showPopup = useShowPopup();
 
   const [upazillaId, setUpazillaId] = useState(0);
   const [disabled, setDisabled] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState({
-    class: [],
+    class: "",
     days: 0,
     time: [],
     group: "",
+    subjects: [],
+    medium: "",
   });
   const [error, setError] = useState({ boo: false, message: "" });
+  const [randomNumber, setRandomNumber] = useState(0);
+  const generatedNumbers = useRef(new Set());
 
   const [districtData, upazillaData] = useGetLocation(upazillaId);
 
   const { register, handleSubmit } = useForm();
 
   const onSubmit = (data) => {
+    showPopup();
+    setDisabled(true);
     if (
       data.number === "" ||
       data.district === "" ||
       data.upazilla === "" ||
       data.area === "" ||
       data.salary === "" ||
+      data.studentNumber === "" ||
+      data.gender === "" ||
       selectedOptions.class.length === 0 ||
-      selectedOptions.time.length === 0 ||
-      selectedOptions.days === 0
+      selectedOptions.time === "" ||
+      selectedOptions.days === 0 ||
+      selectedOptions.subjects.length === 0 ||
+      selectedOptions.medium === "" ||
+      selectedOptions.group === ""
     ) {
       setError({ boo: true, message: "Please fill out the form" });
+      setDisabled(false);
       return;
     }
 
-    setDisabled(true);
+    let newNumber;
+    do {
+      newNumber = 50000 + Math.floor(Math.random() * 10000);
+    } while (generatedNumbers.current.has(newNumber));
+
+    generatedNumbers.current.add(newNumber);
+    setRandomNumber(newNumber);
+
     const infos = {
-      personalInformation: {
-        name: user.displayName,
-        email: user.email,
-        salary: data.salary,
-        location: {
-          district: data.district,
-          upazilla: data.upazilla,
-          area: data.area,
-        },
+      tuitionCode: randomNumber,
+      email: user.email,
+      gender: data.gender,
+      salary: data.salary,
+      location: {
+        district: data.district,
+        upazilla: data.upazilla,
+        area: data.area,
       },
-      preference: {
-        preferredTime: selectedOptions.time,
-        preferredClass: selectedOptions.class,
-        availableDays: selectedOptions.days,
-      },
+      time: selectedOptions.time,
+      days: selectedOptions.days,
+      class: selectedOptions.class,
+      group: selectedOptions.group,
+      subjects: selectedOptions.subjects,
+      medium: selectedOptions.medium,
+      studentNumber: data.studentNumber,
     };
 
     axios
-      .post("/teacher-applications", infos)
+      .post("/requirements-application", infos)
       .then((res) => {
         if (res.data.acknowledged) {
           navigate("/");
@@ -120,7 +162,7 @@ export default function TeacherRequirementsForm() {
 
   useEffect(() => {
     document.title = "Tutor Requirements";
-  }, []);
+  }, [selectedOptions.class]);
 
   return (
     <div className="py-32">
@@ -146,7 +188,7 @@ export default function TeacherRequirementsForm() {
                   {...register("gender")}
                   className="md:w-[330px] w-full select select-bordered"
                 >
-                  <option value="">Select your Gender</option>
+                  <option value="">Select Gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                 </select>
@@ -227,13 +269,19 @@ export default function TeacherRequirementsForm() {
                 <label className="block mt-3 mb-2">Time</label>
                 <Select
                   options={timeOptions}
-                  value={selectedOptions.time}
-                  onChange={(e) =>
+                  value={timeOptions.find(
+                    (option) => option.value === selectedOptions.time
+                  )}
+                  onChange={(selectedOption) => {
+                    const selectedValue = selectedOption
+                      ? selectedOption.value
+                      : "";
+
                     setSelectedOptions((prevState) => ({
                       ...prevState,
-                      time: e,
-                    }))
-                  }
+                      time: selectedValue,
+                    }));
+                  }}
                   styles={{
                     control: (baseStyles) => ({
                       ...baseStyles,
@@ -251,13 +299,18 @@ export default function TeacherRequirementsForm() {
                 <label className="block mt-3 mb-2">Class</label>
                 <Select
                   options={classOptions}
-                  value={selectedOptions.class}
-                  onChange={(e) =>
+                  value={classOptions.find(
+                    (option) => option.value === selectedOptions.group
+                  )}
+                  onChange={(selectedOption) => {
+                    const selectedValue = selectedOption
+                      ? selectedOption.value
+                      : "";
                     setSelectedOptions((prevState) => ({
                       ...prevState,
-                      class: e,
-                    }))
-                  }
+                      class: selectedValue,
+                    }));
+                  }}
                   styles={{
                     control: (baseStyles) => ({
                       ...baseStyles,
@@ -269,15 +322,21 @@ export default function TeacherRequirementsForm() {
               <div className="md:w-[330px] w-full">
                 <label className="block mt-3 mb-2">Group</label>
                 <Select
-                  isDisabled
-                  options={classOptions}
-                  value={selectedOptions.class}
-                  onChange={(e) =>
+                  // isDisabled
+                  options={groupOptions}
+                  value={groupOptions.find(
+                    (option) => option.value === selectedOptions.group
+                  )}
+                  onChange={(selectedOption) => {
+                    const selectedValue = selectedOption
+                      ? selectedOption.value
+                      : "";
+
                     setSelectedOptions((prevState) => ({
                       ...prevState,
-                      class: e,
-                    }))
-                  }
+                      group: selectedValue,
+                    }));
+                  }}
                   styles={{
                     control: (baseStyles) => ({
                       ...baseStyles,
@@ -290,17 +349,23 @@ export default function TeacherRequirementsForm() {
             {/* ----- class and group ----- */}
 
             {/* ----- subject ----- */}
+            <label className="block mt-3 mb-2">Subject</label>
             <div className="mt-3">
               <Select
                 isMulti
-                // options={preferredClassOptions}
-                // value={selectedOptions.preferredClass}
-                onChange={(e) =>
+                options={subjectOptions}
+                value={selectedOptions.subjects.map((value) =>
+                  subjectOptions.find((option) => option.value === value)
+                )}
+                onChange={(selectedOptionsArray) => {
+                  const selectedValues = selectedOptionsArray.map(
+                    (option) => option.value
+                  );
                   setSelectedOptions((prevState) => ({
                     ...prevState,
-                    preferredClass: e,
-                  }))
-                }
+                    subjects: selectedValues,
+                  }));
+                }}
                 styles={{
                   control: (baseStyles) => ({
                     ...baseStyles,
@@ -311,9 +376,51 @@ export default function TeacherRequirementsForm() {
             </div>
             {/* ----- subject ----- */}
 
+            {/* ----- number of student and medium ----- */}
+            <div className="flex justify-center md:flex-row flex-col md:gap-3 gap-2">
+              <div className="md:w-[330px] w-full">
+                <label className="block mt-3 mb-2">Number of Students</label>
+                <input
+                  {...register("studentNumber")}
+                  type="number"
+                  className="input input-bordered w-full"
+                  placeholder="Type..."
+                />
+              </div>
+              <div className="md:w-[330px] w-full">
+                <label className="block mt-3 mb-2">Medium</label>
+                <Select
+                  options={mediumOptions}
+                  value={mediumOptions.find(
+                    (option) => option.value === selectedOptions.medium
+                  )}
+                  onChange={(selectedOption) => {
+                    const selectedValue = selectedOption
+                      ? selectedOption.value
+                      : "";
+
+                    setSelectedOptions((prevState) => ({
+                      ...prevState,
+                      medium: selectedValue,
+                    }));
+                  }}
+                  styles={{
+                    control: (baseStyles) => ({
+                      ...baseStyles,
+                      height: "48px",
+                    }),
+                  }}
+                />
+              </div>
+            </div>
+            {/* ----- number of student and medium ----- */}
+
             <button
               type="submit"
-              className="py-3 rounded-xl bg-[#00ADB5] text-white hover:bg-opacity-80 transition-all mt-4 w-full"
+              className={`py-3 rounded-xl text-white transition-all mt-4 w-full cursor-pointer ${
+                !disabled ? "hover:bg-opacity-80 bg-[#00ADB5]" : "bg-[#EEEEEE]"
+              }`}
+              disabled={disabled}
             >
               Submit
             </button>

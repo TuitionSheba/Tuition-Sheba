@@ -12,6 +12,7 @@ import TeachersDetails from "../MainPage/Home/Available Tuitions/Tuition data/Te
 import PrivateRoute from "./PrivateRoute";
 import Notifications from "../Dashboard/Notifications";
 import TeacherRequirementsForm from "../MainPage/Find Tutor/TeacherRequirements";
+import TutorApplication from "../MainPage/Home/Tuto Application/TeacherApplication";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,14 @@ const router = createBrowserRouter([
         element: (
           // <UserRoute>
           <TeacherRequirementsForm />
+          // </UserRoute>
+        ),
+      },
+      {
+        path: "/Teacher-Application",
+        element: (
+          // <UserRoute>
+          <TutorApplication />
           // </UserRoute>
         ),
       },

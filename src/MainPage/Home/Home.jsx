@@ -1,20 +1,29 @@
 import Header from "../../Components/Header";
 import AboutUs from "./About us/AboutUs";
-import AppliedTutor from "./Applied Tutor/AppliedTutor";
+import TutorApplication from "./Tuto Application/TutorApplication";
 import AvailableTuitions from "./Available Tuitions/AvailableTuitions";
 import Banner from "./Banner/Banner";
 import "./Banner/Banner.css";
 import Feedback from "./Feedback/Feedback";
 import PaymentSection from "./Payment Section/PaymentSection";
+import { useEffect, useState } from "react";
+import useUser from "../../Hook/useUser";
 
 const Home = () => {
+  const [data] = useUser();
+  const [validity, setValidity] = useState(false);
+  useEffect(() => {
+    if (data && data.userRoll === "teacher") {
+      setValidity(true);
+    }
+  }, [data]);
   return (
     <div>
       <div className="hero-section">
         <Banner />
       </div>
       <div className="max-w-screen-xl mx-auto">
-        <AppliedTutor />
+        {!validity && <TutorApplication />}
         <AvailableTuitions />
         <Feedback />
       </div>

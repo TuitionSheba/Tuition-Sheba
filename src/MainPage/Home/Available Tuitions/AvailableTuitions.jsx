@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import PageNumbers from "./PageNumbers";
 import TuitionCard from "./Tuition data/Table";
-import { useQuery } from "@tanstack/react-query";
-import useAxiosSecure from "../../../Hook/useAxiosSecure";
+import useGetTuitions from "../../../Hook/useGetTuitions";
 
 const option = [
   { value: "all", label: "All" },
@@ -14,16 +13,9 @@ const option = [
 ];
 
 const AvailableTuitions = () => {
-  const axios = useAxiosSecure();
   const { register, handleSubmit, reset } = useForm();
   const [gender, setGender] = useState("");
-  const { data, isPending } = useQuery({
-    queryKey: [],
-    queryFn: async () => {
-      const res = await axios.get("/available-Teachers");
-      return res.data;
-    },
-  });
+  const [data, isPending] = useGetTuitions("all");
   if (isPending) {
     return;
   }
@@ -95,8 +87,8 @@ const AvailableTuitions = () => {
         </div>
       </form>
       <PageNumbers />
-      <div className="my-8 grid xl:grid-cols-[410px_410px_410px] md:grid-cols-[350px_350px] grid-cols-[350px] xl:gap-8 gap-4 justify-center">
-        {data.map((x, idx) => (
+      <div className="my-8 grid xl:grid-cols-[410px_410px_410px] md:grid-cols-[380px_380px] grid-cols-[350px] xl:gap-8 gap-4 justify-center">
+        {data?.map((x, idx) => (
           <TuitionCard key={idx} data={x} />
         ))}
       </div>

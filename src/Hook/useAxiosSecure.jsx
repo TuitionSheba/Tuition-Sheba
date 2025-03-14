@@ -4,7 +4,7 @@ import axios from "axios";
 // import { AuthContext } from "../../Auth Provider/AuthProvider";
 
 const axiosSecure = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "https://tuition-sheba-server.vercel.app",
 });
 const useAxiosSecure = () => {
   // const navigate = useNavigate();

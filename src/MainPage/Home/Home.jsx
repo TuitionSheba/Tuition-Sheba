@@ -1,6 +1,6 @@
 import Header from "../../Components/Header";
 import AboutUs from "./About us/AboutUs";
-import TutorApplication from "./Tuto Application/TutorApplication";
+import TutorApplication from "./Tutor Application/TutorApplication";
 import AvailableTuitions from "./Available Tuitions/AvailableTuitions";
 import Banner from "./Banner/Banner";
 import "./Banner/Banner.css";

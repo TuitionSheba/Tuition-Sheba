@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 import useGetApplications from "../../Hook/useGetApplications";
 import useAxiosSecure from "../../Hook/useAxiosSecure";
 import { useEffect, useState } from "react";
-const TeachersSubmission = () => {
+
+const TeachersSubmissions = () => {
   const [data, isPending, ,] = useGetApplications("all");
   const axios = useAxiosSecure();
   const [count, setCount] = useState(0);
@@ -58,7 +59,11 @@ const TeachersSubmission = () => {
                   x.approval === "accepted" ? "text-green-500" : "text-red-600"
                 } font-bold`}
               >
-                {x.approval === "accepted" ? "approved" : "not approved"}
+                {x.approval === "accepted"
+                  ? "approved"
+                  : x.approval === "denied"
+                  ? "denied"
+                  : "pending"}
               </td>
               <th>
                 <Link
@@ -76,4 +81,4 @@ const TeachersSubmission = () => {
   );
 };
 
-export default TeachersSubmission;
+export default TeachersSubmissions;

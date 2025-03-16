@@ -12,7 +12,7 @@ import {
 import { HiAcademicCap } from "react-icons/hi";
 import useGetLocation from "../../../../Hook/useGetLocation";
 import useUser from "../../../../Hook/useUser";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const TuitionCard = ({ data }) => {
@@ -22,13 +22,22 @@ const TuitionCard = ({ data }) => {
   );
   const [userData, userLoading] = useUser();
   const [validity, setValidity] = useState(false);
+  const [pending, setPending] = useState("");
+
+  useEffect(() => {
+    if (userData?.pending === true) {
+      setPending("/dashboard/notifications");
+    } else if (userData?.pending === undefined || false) {
+      setPending("/Teacher-Application");
+    }
+
+    if (userData?.userRoll === "teacher") {
+      setValidity(true);
+    }
+  }, [userData?.pending, userData?.userRoll]);
 
   if (userLoading) {
     return;
-  }
-
-  if (userData.userRoll === "teacher") {
-    setValidity(true);
   }
 
   return (
@@ -155,9 +164,11 @@ const TuitionCard = ({ data }) => {
             Apply Now
           </button>
         ) : (
+          // "/dashboard/notifications"
+          // "/Teacher-Application"
           <Link
-            to={"/Teacher-Application"}
             className="bg-[#00ADB5] text-white px-4 py-2 rounded-lg shadow-md hover:bg-opacity-80"
+            to={pending}
           >
             Apply Now
           </Link>

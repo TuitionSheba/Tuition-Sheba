@@ -5,14 +5,13 @@ import Login from "../Authentication/Login";
 import SignUp from "../Authentication/Registration";
 import UserProfile from "../Dashboard/UserProfile";
 import DashboardPageRoot from "../root/DashboardPageRoot";
-import TeachersSubmission from "../Dashboard/Admin/TeachersSubmission";
+import TeachersSubmissions from "../Dashboard/Admin/TeachersSubmission";
 import AdminRoute from "./adminRoute";
 import ApplicatorsDetails from "../Dashboard/Admin/ApplicatorsDetails";
-import TeachersDetails from "../MainPage/Home/Available Tuitions/Tuition data/TeachersDetails";
 import PrivateRoute from "./PrivateRoute";
 import Notifications from "../Dashboard/Notifications";
 import TeacherRequirementsForm from "../MainPage/Find Tutor/TeacherRequirements";
-import TutorApplication from "../MainPage/Home/Tuto Application/TeacherApplication";
+import TeacherApplicationForm from "../MainPage/Home/Tutor Application/TeacherApplication";
 
 const router = createBrowserRouter([
   {
@@ -43,16 +42,8 @@ const router = createBrowserRouter([
         path: "/Teacher-Application",
         element: (
           // <UserRoute>
-          <TutorApplication />
+          <TeacherApplicationForm />
           // </UserRoute>
-        ),
-      },
-      {
-        path: "/Teachers-details/:id",
-        element: (
-          <PrivateRoute>
-            <TeachersDetails />
-          </PrivateRoute>
         ),
       },
     ],
@@ -69,7 +60,7 @@ const router = createBrowserRouter([
         path: "/dashboard/Teachers-Submission",
         element: (
           <AdminRoute>
-            <TeachersSubmission />
+            <TeachersSubmissions />
           </AdminRoute>
         ),
       },
@@ -84,9 +75,9 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/notifications",
         element: (
-          <AdminRoute>
+          <PrivateRoute>
             <Notifications />
-          </AdminRoute>
+          </PrivateRoute>
         ),
       },
     ],

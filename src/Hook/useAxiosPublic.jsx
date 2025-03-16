@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosPublic = axios.create({
-  baseURL: "https://tuition-sheba-server.vercel.app",
+  baseURL: "http://localhost:5070",
 });
 
 const useAxiosPublic = () => {

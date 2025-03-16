@@ -96,33 +96,6 @@ const TeachersDetails = () => {
             </tbody>
           </table>
         </div>
-        <div>
-          <h1 className="text-2xl font-semibold text-center mt-12">
-            Tuition Details
-          </h1>
-          <div className="lg:text-2xl space-y-3 mt-5">
-            <h3 className="space-x-3">
-              <span className="font-semibold">Class :</span>{" "}
-              {data.preference.preferredClass.map((x, idx) => (
-                <span key={idx}>{x.label}</span>
-              ))}
-            </h3>
-            <h3 className="space-x-3">
-              <span className="font-semibold">Preferred Time :</span>{" "}
-              {data.preference.preferredTime.map((x, idx) => (
-                <span key={idx}>{x.label}</span>
-              ))}
-            </h3>
-            <h3>
-              <span className="font-semibold">AvailableDays :</span>{" "}
-              {data.preference.availableDays} days in a Week
-            </h3>
-            <h3>
-              <span className="font-semibold">Teaching Style :</span> Adding
-              Soon
-            </h3>
-          </div>
-        </div>
       </div>
       <div>
         <div className="flex justify-center mr-4 gap-2 mt-12">

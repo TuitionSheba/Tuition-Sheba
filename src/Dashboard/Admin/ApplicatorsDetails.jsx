@@ -1,15 +1,17 @@
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../Hook/useAxiosSecure";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import useGetLocation from "../../Hook/useGetLocation";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import Swal from "sweetalert2";
+import { AuthContext } from "../../Auth Provider/AuthContext";
 
 const ApplicatorsDetails = () => {
+  const { user, loading } = useContext(AuthContext);
   const params = useParams();
   const axios = useAxiosSecure();
-  const { data, isPending } = useQuery({
+  const { data, isPending, refetch } = useQuery({
     queryKey: [params.id, "teacher-applications"],
     queryFn: async () => {
       const res = await axios.get(`/teacher-applications-details/${params.id}`);
@@ -24,7 +26,7 @@ const ApplicatorsDetails = () => {
   );
   const [active, setActive] = useState(1);
 
-  if (isPending) {
+  if (isPending || loading) {
     return;
   }
 
@@ -67,10 +69,12 @@ const ApplicatorsDetails = () => {
             axios
               .patch(`/manage-applicators/${params.id}?approval=denied`, {
                 message: text,
+                name: user.displayName,
               })
               .then((res) => {
                 if (res.data.acknowledged) {
                   Swal.fire("Message Sent Successfully");
+                  refetch();
                 }
               })
               .catch(() => {
@@ -114,13 +118,6 @@ const ApplicatorsDetails = () => {
               className={`tab ${active === 2 && "tab-active"}`}
             >
               Education
-            </a>
-            <a
-              onClick={() => setActive(3)}
-              role="tab"
-              className={`tab ${active === 3 && "tab-active"}`}
-            >
-              Tuitions Details
             </a>
           </div>
           <div>
@@ -176,32 +173,9 @@ const ApplicatorsDetails = () => {
                 </table>
               </div>
             </div>
-            <div
-              className={`${
-                active === 3 ? "block" : "hidden"
-              } text-lg font-medium space-y-3 md:px-0 px-8`}
-            >
-              <h1 className="text-xl font-semibold">Preference :</h1>
-              <p className="flex gap-2">
-                <span>Preferred Time :</span>
-                {data.preference.preferredTime.map((x, idx) => (
-                  <span key={idx}>{x.label} ,</span>
-                ))}
-              </p>
-              <p className="flex gap-2">
-                <span>Preferred Time :</span>
-                {data.preference.preferredClass.map((x, idx) => (
-                  <span key={idx}>{x.label} ,</span>
-                ))}
-              </p>
-              <p>
-                Available in a Week : {data.preference.availableDays} Days a
-                Week
-              </p>
-            </div>
           </div>
         </div>
-        {!data.approval && (
+        {data.approval === null && (
           <div className="flex justify-center mr-4 gap-2 mt-12">
             <button
               className="bg-[#D84040] transition-all hover:bg-opacity-80 px-3 py-2 rounded-xl text-white cursor-pointer"

@@ -31,6 +31,7 @@ const DashboardPageRoot = () => {
             </label>
           </div>
           <div className="drawer-side z-50">
+            {/* Mobile device */}
             <label
               htmlFor="my-drawer-2"
               aria-label="close sidebar"
@@ -44,7 +45,7 @@ const DashboardPageRoot = () => {
                 </Link>
               </li>
               <div>
-                <h5 className="text-sm ml-2 mt-6">main menu</h5>
+                <h5 className="text-sm ml-2 my-6">main menu</h5>
               </div>
               <li className="flex justify-center">
                 <NavLink
@@ -66,7 +67,7 @@ const DashboardPageRoot = () => {
                       isActive ? "bg-[#d4d4d4]" : "hover:bg-[#EEEEEE]"
                     }`
                   }
-                  to={"/dashboard/user-profile"}
+                  to={"/dashboard/notifications"}
                 >
                   <IoMdNotifications className="-mt-[2px] text-xl" />
                   <span className="font-semibold">Notifications</span>
@@ -106,6 +107,7 @@ const DashboardPageRoot = () => {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
+          {/* Bigger device */}
           <ul className="bg-[#F9F9F9] text-base-content min-h-full w-[300px] pt-4 space-y-3">
             <li className="flex justify-center mt-3">
               <Link to={"/"} className="text-xl font-bold">

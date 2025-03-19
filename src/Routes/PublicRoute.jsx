@@ -12,6 +12,10 @@ import PrivateRoute from "./PrivateRoute";
 import Notifications from "../Dashboard/Notifications";
 import TeacherRequirementsForm from "../MainPage/Find Tutor/TeacherRequirements";
 import TeacherApplicationForm from "../MainPage/Home/Tutor Application/TeacherApplication";
+import UserRoute from "./UserRoute";
+import TeacherRoute from "./TeacherRoute";
+import AvailableTuition from "../MainPage/Available Tuition/AvailableTuition";
+import AppliedTuitions from "../Dashboard/Teacher/AppliedTuitions";
 
 const router = createBrowserRouter([
   {
@@ -41,13 +45,18 @@ const router = createBrowserRouter([
       {
         path: "/Teacher-Application",
         element: (
-          // <UserRoute>
-          <TeacherApplicationForm />
-          // </UserRoute>
+          <UserRoute>
+            <TeacherApplicationForm />
+          </UserRoute>
         ),
+      },
+      {
+        path: "/Available-Tuitions",
+        element: <AvailableTuition />,
       },
     ],
   },
+
   {
     path: "/dashboard",
     element: <DashboardPageRoot />,
@@ -78,6 +87,14 @@ const router = createBrowserRouter([
           <PrivateRoute>
             <Notifications />
           </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/Applied-Tuitions",
+        element: (
+          <TeacherRoute>
+            <AppliedTuitions />
+          </TeacherRoute>
         ),
       },
     ],

@@ -98,6 +98,7 @@ export default function TeacherApplicationForm() {
       )
       .then((res) => {
         const infos = {
+          approval: "pending",
           personalInformation: {
             name: user.displayName,
             email: user.email,
@@ -136,6 +137,7 @@ export default function TeacherApplicationForm() {
 
   useEffect(() => {
     document.title = "Teacher Application";
+    window.scroll(0, 0);
   }, []);
 
   return (

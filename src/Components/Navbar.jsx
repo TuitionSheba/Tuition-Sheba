@@ -10,7 +10,9 @@ const Navbar = () => {
   const Links = (
     <>
       <li>
-        <NavLink className="hover:opacity-80">Available Tuitions</NavLink>
+        <NavLink to={"/Available-Tuitions"} className="hover:opacity-80">
+          Available Tuitions
+        </NavLink>
       </li>
       <li>
         <NavLink className="hover:opacity-80">Find Tutor</NavLink>
@@ -80,7 +82,9 @@ const Navbar = () => {
         <NavLink to={"/dashboard/user-profile"}>Dashboard</NavLink>
       </li>
       <li>
-        <NavLink className="hover:opacity-80">Available Tuitions</NavLink>
+        <NavLink to={"/Available-Tuitions"} className="hover:opacity-80">
+          Available Tuitions
+        </NavLink>
       </li>
       <li>
         <NavLink className="hover:opacity-80">Find Tutor</NavLink>

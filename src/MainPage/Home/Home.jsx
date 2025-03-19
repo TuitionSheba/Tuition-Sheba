@@ -1,7 +1,7 @@
 import Header from "../../Components/Header";
 import AboutUs from "./About us/AboutUs";
 import TutorApplication from "./Tutor Application/TutorApplication";
-import AvailableTuitions from "./Available Tuitions/AvailableTuitions";
+import LatestTuitions from "./Available Tuitions/LatestTuitions";
 import Banner from "./Banner/Banner";
 import "./Banner/Banner.css";
 import Feedback from "./Feedback/Feedback";
@@ -24,7 +24,7 @@ const Home = () => {
       </div>
       <div className="max-w-screen-xl mx-auto">
         {!validity && <TutorApplication />}
-        <AvailableTuitions />
+        <LatestTuitions />
         <Feedback />
       </div>
       <div className="bg-gradient-to-r from-[#EEEEEE] to-[#393E46] w-full">

@@ -14,6 +14,7 @@ import useGetLocation from "../../../../Hook/useGetLocation";
 import useUser from "../../../../Hook/useUser";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const TuitionCard = ({ data }) => {
   const [, , , filteredDistrict, filteredUpazilla] = useGetLocation(
@@ -23,6 +24,19 @@ const TuitionCard = ({ data }) => {
   const [userData, userLoading] = useUser();
   const [validity, setValidity] = useState(false);
   const [pending, setPending] = useState("");
+
+  const handleApply = () => {
+    Swal.fire({
+      title: "application received successfully, you'll be notified soon",
+      showDenyButton: true,
+      confirmButtonText: "see all applied tuitions",
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        window.location.href = "/dashboard/notifications";
+      }
+    });
+  };
 
   useEffect(() => {
     if (userData?.pending === true) {
@@ -37,7 +51,14 @@ const TuitionCard = ({ data }) => {
   }, [userData?.pending, userData?.userRoll]);
 
   if (userLoading) {
-    return;
+    return (
+      <div className="flex w-52 flex-col gap-4">
+        <div className="skeleton h-32 w-full"></div>
+        <div className="skeleton h-4 w-28"></div>
+        <div className="skeleton h-4 w-full"></div>
+        <div className="skeleton h-4 w-full"></div>
+      </div>
+    );
   }
 
   return (
@@ -158,14 +179,15 @@ const TuitionCard = ({ data }) => {
           </span>
         </div>
       </div>
-      <button className="p-4 flex justify-center">
+      <div className="p-4 flex justify-center">
         {validity ? (
-          <button className="bg-[#00ADB5] text-white px-4 py-2 rounded-lg shadow-md hover:bg-opacity-80">
+          <button
+            onClick={handleApply}
+            className="bg-[#00ADB5] text-white px-4 py-2 rounded-lg shadow-md hover:bg-opacity-80"
+          >
             Apply Now
           </button>
         ) : (
-          // "/dashboard/notifications"
-          // "/Teacher-Application"
           <Link
             className="bg-[#00ADB5] text-white px-4 py-2 rounded-lg shadow-md hover:bg-opacity-80"
             to={pending}
@@ -173,7 +195,7 @@ const TuitionCard = ({ data }) => {
             Apply Now
           </Link>
         )}
-      </button>
+      </div>
     </div>
   );
 };

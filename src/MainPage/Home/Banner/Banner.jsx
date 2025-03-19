@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./Banner.css";
 const Banner = () => {
   return (
@@ -8,10 +9,10 @@ const Banner = () => {
           Connect with expert tutors tailored to your educational needs
         </p>
         <div>
-          <a href="tuitions.html">
-            <button className="btn me-3 mb-3">Available Tuitions</button>
-          </a>
-          <a href="https://wa.me/+88001891644064?text=আমার%20টিচার%20লাগবে">
+          <Link to={"/Available-Tuitions"} className="btn me-3 mb-3">
+            Available Tuitions
+          </Link>
+          <a>
             <button className="btn btn-outline-light mb-3 mb-sm-0">
               Find Tutor
             </button>

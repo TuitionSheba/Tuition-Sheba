@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { useContext } from "react";
 import useUser from "../Hook/useUser";
 import { AuthContext } from "../Auth Provider/AuthContext";
+
 const UserRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
   const [data, userLoading] = useUser();

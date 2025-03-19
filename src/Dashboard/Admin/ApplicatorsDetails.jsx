@@ -27,7 +27,11 @@ const ApplicatorsDetails = () => {
   const [active, setActive] = useState(1);
 
   if (isPending || loading) {
-    return;
+    return (
+      <div className="flex justify-center mt-[25%]">
+        <span className="loading loading-spinner loading-lg flex"></span>
+      </div>
+    );
   }
 
   const handleApproval = (x) => {
@@ -41,13 +45,16 @@ const ApplicatorsDetails = () => {
         confirmButtonText: "Yes",
       }).then((result) => {
         if (result.isConfirmed) {
-          axios.patch(`/manage-applicators/${params.id}?approval=accepted`);
+          axios.patch(`/manage-applicators/${params.id}?approval=accepted`, {
+            name: user.displayName,
+          });
+          refetch();
         }
       });
     }
     if (x === 0) {
       Swal.fire({
-        title: "Are you sure that you want to decline him ?",
+        title: "Are you sure that you want to decline/revoke him ?",
         icon: "question",
         showCancelButton: true,
         confirmButtonColor: "#22C55E",
@@ -175,7 +182,7 @@ const ApplicatorsDetails = () => {
             </div>
           </div>
         </div>
-        {data.approval === null && (
+        {data.approval === "pending" && (
           <div className="flex justify-center mr-4 gap-2 mt-12">
             <button
               className="bg-[#D84040] transition-all hover:bg-opacity-80 px-3 py-2 rounded-xl text-white cursor-pointer"
@@ -188,6 +195,16 @@ const ApplicatorsDetails = () => {
               onClick={() => handleApproval(1)}
             >
               Approve
+            </button>
+          </div>
+        )}
+        {data.approval === "accepted" && (
+          <div className="flex justify-center mr-4 gap-2 mt-12">
+            <button
+              className="bg-gray-600 transition-all hover:bg-opacity-80 px-3 py-2 rounded-xl text-white cursor-pointer"
+              onClick={() => handleApproval(0)}
+            >
+              Revoke Approval
             </button>
           </div>
         )}

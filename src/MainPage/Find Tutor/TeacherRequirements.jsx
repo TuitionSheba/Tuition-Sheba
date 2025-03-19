@@ -125,7 +125,7 @@ export default function TeacherRequirementsForm() {
     setRandomNumber(newNumber);
 
     const infos = {
-      tuitionCode: randomNumber,
+      tuitionCode: randomNumber.toString(),
       email: user.email,
       gender: data.gender,
       salary: data.salary,

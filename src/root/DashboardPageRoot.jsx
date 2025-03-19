@@ -1,11 +1,19 @@
-import { FaWpforms } from "react-icons/fa";
+import { FaRegNewspaper, FaWpforms } from "react-icons/fa";
 import { ImProfile } from "react-icons/im";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import useUser from "../Hook/useUser";
 import { IoMdNotifications } from "react-icons/io";
 
 const DashboardPageRoot = () => {
-  const [data] = useUser();
+  const [data, userLoading] = useUser();
+
+  if (userLoading) {
+    return (
+      <div className="flex justify-center mt-[25%]">
+        <span className="loading loading-spinner loading-lg flex"></span>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -73,6 +81,21 @@ const DashboardPageRoot = () => {
                   <span className="font-semibold">Notifications</span>
                 </NavLink>
               </li>
+              {data.userRoll === "teacher" && (
+                <li className="flex justify-center">
+                  <NavLink
+                    className={({ isActive }) =>
+                      `flex item-center items-center gap-2 px-4 py-3 rounded-xl w-[250px] ${
+                        isActive ? "bg-[#d4d4d4]" : "hover:bg-[#EEEEEE]"
+                      }`
+                    }
+                    to={"/dashboard/Applied-Tuitions"}
+                  >
+                    <FaRegNewspaper className="-mt-[2px] text-xl" />
+                    <span className="font-semibold">Applied Tuitions</span>
+                  </NavLink>
+                </li>
+              )}
               {data?.userRoll === "admin" && (
                 <li className="flex justify-center">
                   <NavLink
@@ -84,7 +107,9 @@ const DashboardPageRoot = () => {
                     to={"/dashboard/Teachers-Submission"}
                   >
                     <FaWpforms className="-mt-[2px] -ml-1 text-2xl" />
-                    <span className="font-semibold">Teachers Submission</span>
+                    <span className="font-semibold">
+                      Teacher&apos;s Submissions
+                    </span>
                   </NavLink>
                 </li>
               )}
@@ -144,7 +169,22 @@ const DashboardPageRoot = () => {
                 <span className="font-semibold">Notifications</span>
               </NavLink>
             </li>
-            {data?.userRoll === "admin" && (
+            {data.userRoll === "teacher" && (
+              <li className="flex justify-center">
+                <NavLink
+                  className={({ isActive }) =>
+                    `flex item-center items-center gap-2 px-4 py-3 rounded-xl w-[250px] ${
+                      isActive ? "bg-[#d4d4d4]" : "hover:bg-[#EEEEEE]"
+                    }`
+                  }
+                  to={"/dashboard/Applied-Tuitions"}
+                >
+                  <FaRegNewspaper className="-mt-[2px] text-xl" />
+                  <span className="font-semibold">Applied Tuitions</span>
+                </NavLink>
+              </li>
+            )}
+            {data.userRoll === "admin" && (
               <li className="flex justify-center">
                 <NavLink
                   className={({ isActive }) =>
@@ -155,7 +195,9 @@ const DashboardPageRoot = () => {
                   to={"/dashboard/Teachers-Submission"}
                 >
                   <FaWpforms className="-mt-[2px] -ml-1 text-2xl" />
-                  <span className="font-semibold">Teachers Submission</span>
+                  <span className="font-semibold">
+                    Teacher&apos;s Submissions
+                  </span>
                 </NavLink>
               </li>
             )}

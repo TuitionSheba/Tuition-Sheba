@@ -78,6 +78,26 @@ const Notifications = () => {
             </div>
           )
       )}
+      {userData?.notification?.map(
+        (x, idx) =>
+          x.reason === "applied" && (
+            <div
+              key={idx}
+              className="shadow-sm border rounded-md border-[#959697] bg-[#EEEE] w-[90%] mx-auto mt-10 p-4"
+            >
+              <div>
+                <div className="flex justify-between text-xl font-bold">
+                  <h1>from: {x?.name}</h1>
+                  <p>{x.date}</p>
+                </div>
+                <p className="mt-2">
+                  I have noticed your requirements for a tutor and i&apos;d like
+                  to apply
+                </p>
+              </div>
+            </div>
+          )
+      )}
     </div>
   );
 };

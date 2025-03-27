@@ -19,6 +19,7 @@ import AppliedTuitions from "../Dashboard/Teacher/AppliedTuitions";
 import TutorSubmissions from "../Dashboard/Tutor Submission/TutorSubmissions";
 import TutorDetails from "../Dashboard/Tutor Submission/TutorDetails";
 import TeachersDetails from "../Dashboard/Tutor Submission/TeachersDetails";
+import HiredTutors from "../Dashboard/Hired Tutors/HiredTutors";
 
 const router = createBrowserRouter([
   {
@@ -119,6 +120,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/Tutor-Submissions/Tutors/:requirementId/:tutorId",
         element: <TeachersDetails />,
+      },
+      {
+        path: "/dashboard/Hired-Tutors",
+        element: <HiredTutors />,
       },
     ],
   },

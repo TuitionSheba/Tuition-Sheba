@@ -11,13 +11,30 @@ import {
 } from "react-icons/fa";
 import { HiAcademicCap } from "react-icons/hi";
 import useGetLocation from "../../Hook/useGetLocation";
-import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
-const SubmissionCard = ({ data }) => {
+const HiredTutorCard = ({ data }) => {
   const [, , , filteredDistrict, filteredUpazilla] = useGetLocation(
     data?.location?.district,
     data?.location?.upazilla
   );
+
+  const handleCancel = () => {
+    Swal.fire({
+      title: "Do you Really want to cancel subscription",
+      showDenyButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#d33",
+      denyButtonColor: "gray",
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        Swal.fire("Saved!", "", "success");
+      } else if (result.isDenied) {
+        Swal.fire("Changes are not saved", "", "info");
+      }
+    });
+  };
 
   return (
     <div className="max-w-md mx-auto bg-white shadow-xl rounded-lg overflow-hidden border border-gray-200 xl:w-[350px] md:w-[330px] w-[350px]">
@@ -101,31 +118,19 @@ const SubmissionCard = ({ data }) => {
           </span>
         </div>
       </div>
-      {data.appliedTutor === undefined ? (
-        <div className="pb-3 flex justify-center">No applicator</div>
-      ) : data.tutorFound.status === "pending" ? (
-        <div className="p-4 flex justify-center">
-          <Link
-            to={`/dashboard/Tutor-Submissions/tutors/${data._id}`}
-            className="text-blue-500 px-4 py-2 rounded-lg"
-          >
-            View applicator
-          </Link>
-        </div>
-      ) : (
-        data.tutorFound.status === true && (
-          <div className="p-4 flex justify-center">
-            <button className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md">
-              Tutor Found
-            </button>
-          </div>
-        )
-      )}
+      <div className="p-4 flex justify-center">
+        <button
+          onClick={handleCancel}
+          className="text-red-500 px-4 py-2 rounded-lg font-bold"
+        >
+          Cancel Subscription
+        </button>
+      </div>
     </div>
   );
 };
 
-SubmissionCard.propTypes = {
+HiredTutorCard.propTypes = {
   data: PropTypes.object,
 };
-export default SubmissionCard;
+export default HiredTutorCard;

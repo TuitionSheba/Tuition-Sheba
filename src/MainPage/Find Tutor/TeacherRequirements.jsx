@@ -86,7 +86,6 @@ export default function TeacherRequirementsForm() {
     medium: "",
   });
   const [error, setError] = useState({ boo: false, message: "" });
-  const [randomNumber, setRandomNumber] = useState(0);
   const generatedNumbers = useRef(new Set());
 
   const [districtData, upazillaData] = useGetLocation(upazillaId);
@@ -120,12 +119,12 @@ export default function TeacherRequirementsForm() {
     do {
       newNumber = 50000 + Math.floor(Math.random() * 10000);
     } while (generatedNumbers.current.has(newNumber));
-
-    generatedNumbers.current.add(newNumber);
-    setRandomNumber(newNumber);
+    {
+      generatedNumbers.current.add(newNumber);
+    }
 
     const infos = {
-      tuitionCode: randomNumber.toString(),
+      tuitionCode: newNumber.toString(),
       email: user.email,
       gender: data.gender,
       salary: data.salary,
@@ -322,7 +321,6 @@ export default function TeacherRequirementsForm() {
               <div className="md:w-[330px] w-full">
                 <label className="block mt-3 mb-2">Group</label>
                 <Select
-                  // isDisabled
                   options={groupOptions}
                   value={groupOptions.find(
                     (option) => option.value === selectedOptions.group

@@ -89,9 +89,9 @@ const SignUp = () => {
           navigate(location.state ? location.state : "/");
         });
       })
-
       .catch(() => {
         setExists(true);
+        setLoad(false);
       });
   };
 
@@ -179,7 +179,7 @@ const SignUp = () => {
             </div>
           )}
           {exists && (
-            <div className="bg-red-200 text-red-700 p-2 rounded-md border border-red-700 w-[145px] md:w-[170px] lg:w-[195px] mx-auto">
+            <div className="bg-red-200 text-red-700 p-2 rounded-md border border-red-700 w-[300px] md:w-[350px] lg:w-[400px] mx-auto">
               <p>Account with this email already exists</p>
             </div>
           )}

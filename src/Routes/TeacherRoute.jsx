@@ -9,7 +9,7 @@ const TeacherRoute = ({ children }) => {
   const [data, userLoading] = useUser();
   const location = useLocation();
 
-  if (loading || userLoading) {
+  if (loading || userLoading || !data) {
     return (
       <div className="my-24">
         <div className="flex justify-center mt-[25%]">
@@ -19,7 +19,7 @@ const TeacherRoute = ({ children }) => {
     );
   }
 
-  if (user && data?.userRoll === "teacher") {
+  if (user && data.userRoll === "teacher") {
     return children;
   }
 

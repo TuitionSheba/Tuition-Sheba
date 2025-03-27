@@ -1,16 +1,27 @@
-import { useParams } from "react-router-dom";
-import useAxiosSecure from "../../../../Hook/useAxiosSecure";
+import { useNavigate, useParams } from "react-router-dom";
+import useAxiosSecure from "../../Hook/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
-import useGetLocation from "../../../../Hook/useGetLocation";
+import useGetLocation from "../../Hook/useGetLocation";
 import { useEffect } from "react";
+import Swal from "sweetalert2";
 
 const TeachersDetails = () => {
   const params = useParams();
   const axios = useAxiosSecure();
+  const navigate = useNavigate();
   const { data, isPending } = useQuery({
-    queryKey: [params.id, "teacher-applications"],
+    queryKey: [params, "teacher-applications"],
     queryFn: async () => {
-      const res = await axios.get(`/teacher-applications-details/${params.id}`);
+      const res = await axios.get(
+        `/teacher-applications-details/${params.tutorId}`
+      );
+      return res.data;
+    },
+  });
+  const { data: requirementData, isPending: loading } = useQuery({
+    queryKey: [params, "tutor-application"],
+    queryFn: async () => {
+      const res = await axios.get(`/tutor-submissions/${params.requirementId}`);
       return res.data;
     },
   });
@@ -25,9 +36,69 @@ const TeachersDetails = () => {
     document.title = "Teacher Details";
   }, []);
 
-  if (isPending) {
+  if (isPending || loading) {
     return;
   }
+
+  const handleApply = (response) => {
+    if (response === "rejected") {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        confirmButtonText: "Reject",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .patch("/tutor-application", {
+              from: "client",
+              response: response,
+              tuitionId: params.requirementId,
+              email: requirementData[0].personalInformation.email,
+            })
+            .then((res) => {
+              if (res.data.modifiedCount > 0) {
+                Swal.fire({
+                  position: "top-end",
+                  icon: "success",
+                  title: "Tuition Rejected",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                navigate("/dashboard/Tutor-Submissions");
+              }
+            });
+        }
+      });
+
+      return;
+    } else if (response === "hired") {
+      axios
+        .patch("/tutor-application", {
+          from: "client",
+          response: response,
+          tuitionId: params.requirementId,
+          email: requirementData[0].personalInformation.email,
+        })
+        .then((res) => {
+          if (res.data.modifiedCount > 0) {
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Tuition Accepted",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            navigate("/dashboard/Tutor-Submissions");
+          }
+        });
+
+      return;
+    }
+  };
+
   return (
     <div className="max-w-screen-xl mx-auto pb-12 pt-28 grid lg:grid-cols-[300px_4px_1fr] md:grid-cols-[250px_4px_1fr] grid-cols-1">
       <div>
@@ -99,21 +170,18 @@ const TeachersDetails = () => {
       </div>
       <div>
         <div className="flex justify-center mr-4 gap-2 mt-12">
-          <button className="bg-[#00ADB5] transition-all hover:bg-opacity-80 lg:px-12 px-8 py-2 rounded-xl text-white cursor-pointer">
+          <button
+            onClick={() => handleApply("hired")}
+            className="bg-[#00ADB5] transition-all hover:bg-opacity-80 px-8 py-2 rounded-xl text-white cursor-pointer"
+          >
             Hire
           </button>
-          <a
-            href={`https://wa.me/${data.personalInformation.phoneNumber}`}
-            target="_blank"
-            className="bg-green-600 transition-all hover:bg-opacity-80 lg:px-5 px-3 py-2 rounded-xl text-white cursor-pointer flex gap-1 items-center"
+          <button
+            onClick={() => handleApply("rejected")}
+            className="bg-red-500 transition-all hover:bg-opacity-80 lg:px-5 px-3 py-2 rounded-xl text-white cursor-pointer flex gap-1 items-center"
           >
-            <img
-              className="w-[25px]"
-              src="https://i.ibb.co.com/WqQZmpX/Whats-App-svg.webp"
-              alt=""
-            />
-            <span>Contact</span>
-          </a>
+            Reject
+          </button>
         </div>
       </div>
     </div>

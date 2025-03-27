@@ -1,52 +1,54 @@
-import useGetTuitions from "../../Hook/useGetTuitions";
-import useGetLocation from "../../Hook/useGetLocation";
-import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useContext, useEffect, useState } from "react";
+import useAxiosPublic from "../../Hook/useAxiosPublic";
+import { AuthContext } from "../../Auth Provider/AuthContext";
 import CardSkeleton from "../../Components/CardSkeleton";
-import TuitionCard from "../../Components/Table";
+import { useForm } from "react-hook-form";
+import useGetLocation from "../../Hook/useGetLocation";
+import SubmissionCard from "./SubmissionCard";
 
-const AvailableTuition = () => {
+const TutorSubmissions = () => {
+  const axios = useAxiosPublic();
+  const { user } = useContext(AuthContext);
   const { register, reset, watch } = useForm();
-  const [districtData] = useGetLocation();
   const [query, setQuery] = useState({
     code: "all",
     gender: "all",
     district: "all",
-    topThree: false,
+    status: "all",
   });
-  const [data, isPending, refetch] = useGetTuitions(query);
+  const [districtData] = useGetLocation();
+  const { data, isPending, refetch } = useQuery({
+    queryKey: [query, "tutor-application"],
+    queryFn: async () => {
+      const res = await axios.get(
+        `/tutor-application/${user.email}?from=client&code=${query.code}&gender=all&district=${query.district}&status=${query.status}`
+      );
+      return res.data;
+    },
+  });
 
-  // Watch input values without triggering re-renders
   const codeInput = watch("code");
   const genderInput = watch("gender");
   const districtInput = watch("district");
+  const statusInput = watch("status");
 
-  // Debounce filtering to avoid refetching on every keystroke
   useEffect(() => {
     const timeout = setTimeout(() => {
       setQuery({
-        topThree: false,
         code: codeInput || "all",
-        gender: genderInput || "all",
         district: districtInput || "all",
+        status: statusInput || "all,",
       });
       refetch();
-    }, 500); // Delays state update by 500ms
+    }, 500);
 
     return () => clearTimeout(timeout);
-  }, [codeInput, genderInput, districtInput, refetch]);
-
-  if (isPending) {
-    return (
-      <div className="flex justify-center md:pt-[20%] pt-[50%] mb-[225px]">
-        <span className="loading loading-spinner loading-lg flex"></span>
-      </div>
-    );
-  }
+  }, [codeInput, districtInput, genderInput, refetch, statusInput]);
   return (
-    <div>
-      <div>
-        <div className="flex gap-4 items-center justify-center mb-8 flex-wrap pt-28">
+    <div className="xl:w-[1000px] mx-auto md:mt-24">
+      <div className="flex justify-between mb-4 items-center">
+        <div className="flex md:flex-row flex-col md:gap-4 gap-12 items-center justify-center md:mb-16 md:flex-wrap pt-14 mx-auto">
           <div className="-mt-4">
             <label className="text-lg font-medium">
               Filter by tuition code :
@@ -56,24 +58,24 @@ const AvailableTuition = () => {
                 {...register("code")}
                 type="number"
                 placeholder="Code"
-                className="input input-bordered h-[38px]"
+                className="input w-[200px] input-bordered h-[38px]"
               />
             </div>
           </div>
           <div className="-mt-5">
-            <label className="text-lg font-medium">Filter by Gender :</label>
+            <label className="text-lg font-medium">Filter by status :</label>
             <div className="h-[18px]">
               <select
                 className="select-bordered border shadow-sm rounded-lg p-2 w-[200px] h-[40px] cursor-pointer"
-                {...register("gender")}
+                {...register("status")}
               >
                 <option value="all">All</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
+                <option value="pending">pending</option>
+                <option value="hired">hired</option>
               </select>
             </div>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col xl:mt-0 md:mt-5 -mt-5">
             <label className="text-lg font-medium">Search by Location :</label>
             <select
               {...register("district")}
@@ -88,7 +90,7 @@ const AvailableTuition = () => {
               ))}
             </select>
           </div>
-          <div>
+          <div className="xl:mt-0 md:mt-4 -mt-8">
             <button
               type="button"
               onClick={() => {
@@ -101,7 +103,7 @@ const AvailableTuition = () => {
                   code: "all",
                   gender: "all",
                   district: "all",
-                  topThree: false,
+                  status: "all",
                 });
                 refetch();
               }}
@@ -112,17 +114,20 @@ const AvailableTuition = () => {
           </div>
         </div>
       </div>
-
-      {isPending ? (
+      {data?.length === 0 || undefined ? (
+        <div className="flex justify-center items-center">
+          <h1>No data found</h1>
+        </div>
+      ) : isPending ? (
         <div className="my-8 grid xl:grid-cols-[410px_410px_410px] md:grid-cols-[380px_380px] grid-cols-[350px] xl:gap-8 gap-4 justify-center">
           <CardSkeleton />
           <CardSkeleton />
           <CardSkeleton />
         </div>
       ) : (
-        <div className="my-8 grid xl:grid-cols-[410px_410px_410px] md:grid-cols-[380px_380px] grid-cols-[350px] xl:gap-8 gap-4 justify-center">
+        <div className="my-8 grid xl:grid-cols-[350px_350px_350px] md:grid-cols-[330px_330px] grid-cols-[350px] xl:gap-8 gap-4 justify-center">
           {data?.map((x, idx) => (
-            <TuitionCard key={idx} data={x} />
+            <SubmissionCard key={idx} data={x} />
           ))}
         </div>
       )}
@@ -130,4 +135,4 @@ const AvailableTuition = () => {
   );
 };
 
-export default AvailableTuition;
+export default TutorSubmissions;

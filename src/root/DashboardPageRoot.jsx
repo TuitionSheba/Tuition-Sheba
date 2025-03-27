@@ -75,6 +75,19 @@ const DashboardPageRoot = () => {
                       isActive ? "bg-[#d4d4d4]" : "hover:bg-[#EEEEEE]"
                     }`
                   }
+                  to={"/dashboard/Tutor-Submissions"}
+                >
+                  <FaRegNewspaper className="-mt-[2px] text-xl" />
+                  <span className="font-semibold">Tutor Application</span>
+                </NavLink>
+              </li>
+              <li className="flex justify-center">
+                <NavLink
+                  className={({ isActive }) =>
+                    `flex item-center items-center gap-2 px-4 py-3 rounded-xl w-[250px] ${
+                      isActive ? "bg-[#d4d4d4]" : "hover:bg-[#EEEEEE]"
+                    }`
+                  }
                   to={"/dashboard/notifications"}
                 >
                   <IoMdNotifications className="-mt-[2px] text-xl" />
@@ -167,6 +180,19 @@ const DashboardPageRoot = () => {
               >
                 <IoMdNotifications className="-mt-[2px] text-xl" />
                 <span className="font-semibold">Notifications</span>
+              </NavLink>
+            </li>
+            <li className="flex justify-center">
+              <NavLink
+                className={({ isActive }) =>
+                  `flex item-center items-center gap-2 px-4 py-3 rounded-xl w-[250px] ${
+                    isActive ? "bg-[#d4d4d4]" : "hover:bg-[#EEEEEE]"
+                  }`
+                }
+                to={"/dashboard/Tutor-Submissions"}
+              >
+                <FaRegNewspaper className="-mt-[2px] text-xl" />
+                <span className="font-semibold">Tutor Application</span>
               </NavLink>
             </li>
             {data.userRoll === "teacher" && (

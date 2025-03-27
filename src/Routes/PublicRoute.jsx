@@ -16,6 +16,9 @@ import UserRoute from "./UserRoute";
 import TeacherRoute from "./TeacherRoute";
 import AvailableTuition from "../MainPage/Available Tuition/AvailableTuition";
 import AppliedTuitions from "../Dashboard/Teacher/AppliedTuitions";
+import TutorSubmissions from "../Dashboard/Tutor Submission/TutorSubmissions";
+import TutorDetails from "../Dashboard/Tutor Submission/TutorDetails";
+import TeachersDetails from "../Dashboard/Tutor Submission/TeachersDetails";
 
 const router = createBrowserRouter([
   {
@@ -96,6 +99,26 @@ const router = createBrowserRouter([
             <AppliedTuitions />
           </TeacherRoute>
         ),
+      },
+      {
+        path: "/dashboard/Applied-Tuitions/:id",
+        element: (
+          <TeacherRoute>
+            <AppliedTuitions />
+          </TeacherRoute>
+        ),
+      },
+      {
+        path: "/dashboard/Tutor-Submissions",
+        element: <TutorSubmissions />,
+      },
+      {
+        path: "/dashboard/Tutor-Submissions/Tutors/:requirementId",
+        element: <TutorDetails />,
+      },
+      {
+        path: "/dashboard/Tutor-Submissions/Tutors/:requirementId/:tutorId",
+        element: <TeachersDetails />,
       },
     ],
   },

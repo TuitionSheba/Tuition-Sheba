@@ -17,6 +17,16 @@ const Notifications = () => {
     );
   }
 
+  if (userData["notification"] === undefined && userData.pending !== true) {
+    return (
+      <div className="mt-[25%]">
+        <span className="flex items-center justify-center text-2xl">
+          No notification to show
+        </span>
+      </div>
+    );
+  }
+
   return (
     <div>
       {userData.pending === true && (

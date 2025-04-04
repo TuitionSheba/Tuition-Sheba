@@ -12,12 +12,14 @@ import {
 import { HiAcademicCap } from "react-icons/hi";
 import useGetLocation from "../../Hook/useGetLocation";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../Hook/useAxiosSecure";
 
 const HiredTutorCard = ({ data }) => {
   const [, , , filteredDistrict, filteredUpazilla] = useGetLocation(
     data?.location?.district,
     data?.location?.upazilla
   );
+  const axios = useAxiosSecure();
 
   const handleCancel = () => {
     Swal.fire({
@@ -27,11 +29,8 @@ const HiredTutorCard = ({ data }) => {
       confirmButtonColor: "#d33",
       denyButtonColor: "gray",
     }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        Swal.fire("Saved!", "", "success");
-      } else if (result.isDenied) {
-        Swal.fire("Changes are not saved", "", "info");
+        axios.patch("");
       }
     });
   };
